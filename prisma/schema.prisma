@@ -1,0 +1,269 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// NextAuth.js Required Tables
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // For email/password auth
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // WanderMate specific fields
+  membershipType String  @default("basic") // basic, premium, vip
+  preferences    Json?   // Store user preferences as JSON
+  lastLogin     DateTime?
+  isActive      Boolean  @default(true)
+  
+  // Enhanced user profile
+  phone         String?
+  dateOfBirth   DateTime?
+  gender        String?   // male, female, other, prefer_not_to_say
+  location      String?   // Current city/location
+  bio           String?
+  travelStyle   String?   // adventure, luxury, budget, cultural, spiritual
+  languages     Json?     // Spoken languages
+  
+  // Analytics and personalization
+  totalBookings    Int     @default(0)
+  totalSpent       Float   @default(0)
+  averageRating    Float   @default(0)
+  loyaltyPoints    Int     @default(0)
+  referralCode     String? @unique
+  
+  // Relationships
+  accounts            Account[]
+  sessions            Session[]
+  bookings            Booking[]
+  favorites           Favorite[]
+  reviews             Review[]
+  userActivities      UserActivity[]
+  recommendations     Recommendation[]
+  userInteractions    UserInteraction[]
+  travelPlans         TravelPlan[]
+  notifications       Notification[]
+  referrals           Referral[] @relation("UserReferrals")
+  referredBy          Referral[] @relation("UserReferredBy")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Enhanced WanderMate specific models
+model Booking {
+  id              String   @id @default(cuid())
+  userId          String
+  serviceType     String   // tour, hotel, experience, transportation, etc.
+  serviceName     String
+  serviceProvider String?
+  description     String?
+  bookingDate     DateTime
+  serviceDate     DateTime
+  status          String   @default("pending") // pending, confirmed, completed, cancelled
+  amount          Float
+  currency        String   @default("INR")
+  paymentStatus   String   @default("pending") // pending, paid, refunded
+  paymentMethod   String?  // card, upi, wallet, bank_transfer
+  bookingDetails  Json?    // Additional booking information
+  cancellationPolicy String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviews         Review[]
+  activities      UserActivity[]
+}
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  itemType   String   // temple, ghat, restaurant, experience, etc.
+  itemId     String
+  itemName   String
+  itemImage  String?
+  itemDescription String?
+  location   String?
+  rating     Float?
+  priceRange String?
+  createdAt  DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, itemType, itemId])
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  userId        String
+  bookingId     String?
+  itemType      String   // service, hotel, restaurant, experience
+  itemId        String
+  itemName      String
+  rating        Float    // 1-5 stars
+  title         String?
+  comment       String?
+  images        Json?    // Array of image URLs
+  isVerified    Boolean  @default(false)
+  helpfulCount  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id])
+}
+
+model UserActivity {
+  id            String   @id @default(cuid())
+  userId        String
+  activityType  String   // view, search, book, review, favorite, share
+  itemType      String?  // temple, hotel, restaurant, experience
+  itemId        String?
+  itemName      String?
+  metadata      Json?    // Additional activity data
+  timestamp     DateTime @default(now())
+  sessionId     String?
+  userAgent     String?
+  ipAddress     String?
+  
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [itemId], references: [id])
+}
+
+model Recommendation {
+  id              String   @id @default(cuid())
+  userId          String
+  type            String   // destination, experience, hotel, restaurant
+  title           String
+  description     String
+  itemId          String?
+  itemType        String?
+  imageUrl        String?
+  score           Float    // Recommendation confidence score
+  reasoning       String?  // Why this was recommended
+  isPersonalized  Boolean  @default(true)
+  isActive        Boolean  @default(true)
+  clickCount      Int      @default(0)
+  conversionCount Int      @default(0)
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserInteraction {
+  id           String   @id @default(cuid())
+  userId       String
+  interactionType String // click, view, search, filter, scroll
+  page         String?
+  element      String?
+  data         Json?
+  timestamp    DateTime @default(now())
+  sessionId    String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TravelPlan {
+  id              String   @id @default(cuid())
+  userId          String
+  title           String
+  description     String?
+  destination     String
+  startDate       DateTime
+  endDate         DateTime
+  budget          Float?
+  currency        String   @default("INR")
+  status          String   @default("planning") // planning, confirmed, ongoing, completed
+  isPublic        Boolean  @default(false)
+  collaborators   Json?    // Array of user IDs who can view/edit
+  itinerary       Json?    // Day-by-day plan
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // booking, recommendation, promotion, system
+  title       String
+  message     String
+  data        Json?    // Additional notification data
+  isRead      Boolean  @default(false)
+  priority    String   @default("normal") // low, normal, high, urgent
+  actionUrl   String?
+  createdAt   DateTime @default(now())
+  readAt      DateTime?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Referral {
+  id              String   @id @default(cuid())
+  referrerId      String
+  refereeEmail    String
+  refereeId       String?
+  status          String   @default("pending") // pending, completed, expired
+  rewardAmount    Float    @default(0)
+  rewardCurrency  String   @default("INR")
+  createdAt       DateTime @default(now())
+  completedAt     DateTime?
+  
+  referrer User  @relation("UserReferrals", fields: [referrerId], references: [id], onDelete: Cascade)
+  referee  User? @relation("UserReferredBy", fields: [refereeId], references: [id])
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
