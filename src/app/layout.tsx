@@ -3,6 +3,7 @@ import { Inter, Cormorant_Garamond, Libre_Baskerville, Source_Sans_3 } from 'nex
 import './globals.css';
 import { Providers } from '@/components/Providers';
 import { CartProvider } from '@/contexts/CartContext';
+import { ToastProvider } from '@/components/MobileToast';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import AIAssistantButton from '@/components/AIAssistantButton';
 import { MobileToastContainer } from '@/components/MobileToast';
@@ -129,16 +130,18 @@ export default function RootLayout({
         <meta name="supported-color-schemes" content="light dark" />
       </head>
       <body className={`${sourceSans.className} antialiased page-layout`}>
-        <CartProvider>
-          <Providers>
-            <div className="w-full min-h-screen overflow-x-hidden">
-              {children}
-            </div>
-          </Providers>
-        </CartProvider>
-        <AIAssistantButton />
-        <WhatsAppButton phoneNumber="919214313559" />
-        <MobileToastContainer />
+        <ToastProvider>
+          <CartProvider>
+            <Providers>
+              <div className="w-full min-h-screen overflow-x-hidden">
+                {children}
+              </div>
+            </Providers>
+          </CartProvider>
+          <AIAssistantButton />
+          <WhatsAppButton phoneNumber="919214313559" />
+          <MobileToastContainer />
+        </ToastProvider>
       </body>
     </html>
   );
