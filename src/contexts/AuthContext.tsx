@@ -1,213 +1,27 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AuthService, User, AuthState, LoginCredentials, RegisterData, AuthResponse } from '@/lib/auth';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<AuthResponse>;
-  register: (data: RegisterData) => Promise<AuthResponse>;
-  logout: () => Promise<void>;
-  updateProfile: (updates: Partial<User>) => Promise<AuthResponse>;
-  refreshAuth: () => Promise<void>;
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  role?: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (name: string, email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  updateUser: (userData: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [authState, setAuthState] = useState<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: true,
-    error: null
-  });
-
-  const authService = AuthService.getInstance();
-
-  // Initialize auth state on mount
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const user = authService.getCurrentUser();
-        const isAuthenticated = authService.isAuthenticated();
-        
-        setAuthState({
-          user,
-          isAuthenticated,
-          isLoading: false,
-          error: null
-        });
-
-        // Refresh token if user is authenticated
-        if (isAuthenticated) {
-          await authService.refreshToken();
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        setAuthState({
-          user: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: 'Failed to initialize authentication'
-        });
-      }
-    };
-
-    initializeAuth();
-  }, []);
-
-  const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
-    try {
-      const result = await authService.login(credentials);
-      
-      setAuthState({
-        user: result.user || null,
-        isAuthenticated: result.success,
-        isLoading: false,
-        error: result.error || null
-      });
-
-      return result;
-    } catch (error) {
-      const errorMessage = 'Login failed. Please try again.';
-      setAuthState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }));
-      return {
-        success: false,
-        error: errorMessage
-      };
-    }
-  };
-
-  const register = async (data: RegisterData): Promise<AuthResponse> => {
-    setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
-    try {
-      const result = await authService.register(data);
-      
-      setAuthState({
-        user: result.user || null,
-        isAuthenticated: result.success,
-        isLoading: false,
-        error: result.error || null
-      });
-
-      return result;
-    } catch (error) {
-      const errorMessage = 'Registration failed. Please try again.';
-      setAuthState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }));
-      return {
-        success: false,
-        error: errorMessage
-      };
-    }
-  };
-
-  const logout = async (): Promise<void> => {
-    setAuthState(prev => ({ ...prev, isLoading: true }));
-    
-    try {
-      await authService.logout();
-      
-      setAuthState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null
-      });
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Even if logout fails, clear the local state
-      setAuthState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null
-      });
-    }
-  };
-
-  const updateProfile = async (updates: Partial<User>): Promise<AuthResponse> => {
-    if (!authState.user) {
-      return {
-        success: false,
-        error: 'Not authenticated'
-      };
-    }
-
-    setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
-    try {
-      const result = await authService.updateProfile(updates);
-      
-      if (result.success && result.user) {
-        setAuthState(prev => ({
-          ...prev,
-          user: result.user!,
-          isLoading: false,
-          error: null
-        }));
-      } else {
-        setAuthState(prev => ({
-          ...prev,
-          isLoading: false,
-          error: result.error || 'Failed to update profile'
-        }));
-      }
-
-      return result;
-    } catch (error) {
-      const errorMessage = 'Failed to update profile';
-      setAuthState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }));
-      return {
-        success: false,
-        error: errorMessage
-      };
-    }
-  };
-
-  const refreshAuth = async (): Promise<void> => {
-    try {
-      const success = await authService.refreshToken();
-      if (!success) {
-        // Token refresh failed, logout user
-        await logout();
-      }
-    } catch (error) {
-      console.error('Token refresh error:', error);
-      await logout();
-    }
-  };
-
-  const contextValue: AuthContextType = {
-    ...authState,
-    login,
-    register,
-    logout,
-    updateProfile,
-    refreshAuth
-  };
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-export function useAuth(): AuthContextType {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -215,27 +29,154 @@ export function useAuth(): AuthContextType {
   return context;
 }
 
-// Higher-order component for protecting routes
-export function withAuth<T extends {}>(Component: React.ComponentType<T>) {
-  return function AuthenticatedComponent(props: T) {
-    const { isAuthenticated, isLoading } = useAuth();
-    
-    if (isLoading) {
-      return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-        </div>
-      );
-    }
-    
-    if (!isAuthenticated) {
-      // Redirect to login or show unauthorized message
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check for existing session
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    try {
+      // Check localStorage for user data
+      const userData = localStorage.getItem('varanasi-user');
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
       }
-      return null;
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+    } finally {
+      setLoading(false);
     }
-    
-    return <Component {...props} />;
   };
-} 
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      
+      // Mock authentication - replace with real API call
+      const mockUser: User = {
+        id: '1',
+        name: 'Demo User',
+        email: email,
+        role: 'user'
+      };
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setUser(mockUser);
+      localStorage.setItem('varanasi-user', JSON.stringify(mockUser));
+      
+      // You can add real authentication logic here
+      // const response = await fetch('/api/auth/signin', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, password })
+      // });
+      // const data = await response.json();
+      // setUser(data.user);
+      
+    } catch (error) {
+      console.error('Sign in error:', error);
+      throw new Error('Failed to sign in');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signUp = async (name: string, email: string, password: string) => {
+    try {
+      setLoading(true);
+      
+      // Mock registration - replace with real API call
+      const mockUser: User = {
+        id: '1',
+        name: name,
+        email: email,
+        role: 'user'
+      };
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setUser(mockUser);
+      localStorage.setItem('varanasi-user', JSON.stringify(mockUser));
+      
+      // You can add real registration logic here
+      // const response = await fetch('/api/auth/signup', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ name, email, password })
+      // });
+      // const data = await response.json();
+      // setUser(data.user);
+      
+    } catch (error) {
+      console.error('Sign up error:', error);
+      throw new Error('Failed to sign up');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      setLoading(true);
+      
+      // Clear user data
+      setUser(null);
+      localStorage.removeItem('varanasi-user');
+      
+      // You can add real sign out logic here
+      // await fetch('/api/auth/signout', { method: 'POST' });
+      
+    } catch (error) {
+      console.error('Sign out error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateUser = async (userData: Partial<User>) => {
+    try {
+      if (user) {
+        const updatedUser = { ...user, ...userData };
+        setUser(updatedUser);
+        localStorage.setItem('varanasi-user', JSON.stringify(updatedUser));
+        
+        // You can add real update logic here
+        // await fetch(`/api/user/update`, {
+        //   method: 'PUT',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(userData)
+        // });
+      }
+    } catch (error) {
+      console.error('Update user error:', error);
+      throw new Error('Failed to update user');
+    }
+  };
+
+  const value: AuthContextType = {
+    user,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    updateUser,
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
