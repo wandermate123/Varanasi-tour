@@ -2,46 +2,119 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useState } from 'react';
-import Reveal from '@/components/Reveal';
 
 export default function LandscapeSection() {
-  const [imageLoadError, setImageLoadError] = useState(false);
-
-  const handleImageError = () => {
-    setImageLoadError(true);
-  };
-
   return (
-    <section className="relative">
-      <Reveal direction="up" distance={40}>
-        {/* Landscape Photo Container */}
-        <div className="relative h-[40vh] md:h-[50vh] lg:h-[60vh] overflow-hidden">
-          {imageLoadError ? (
-            // Professional fallback with Varanasi essence
-            <div className="w-full h-full bg-gradient-to-r from-amber-100 via-orange-50 to-red-50 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-amber-200 to-orange-200 rounded-full flex items-center justify-center">
-                  <svg className="w-12 h-12 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-semibold text-amber-800 mb-2">Sacred Varanasi</h3>
-                <p className="text-amber-600">Where spirituality meets serenity</p>
+    <section className="relative py-16 bg-gradient-to-b from-white to-gray-50">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            Discover Varanasi's Sacred Landscape
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Experience the spiritual essence of the world's oldest living city through its ancient ghats, 
+            sacred temples, and the holy Ganges River
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Ghats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="group"
+          >
+            <div className="relative overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <div className="relative h-64 w-full">
+                <Image
+                  src="/images/ghats.JPG"
+                  alt="Varanasi Ghats"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-semibold mb-2">Sacred Ghats</h3>
+                <p className="text-sm opacity-90">Ancient stone steps leading to the holy Ganges</p>
               </div>
             </div>
-          ) : (
-            <Image 
-              src="/images/varanasi-landscape.JPG" 
-              alt="Varanasi Ghats Panoramic View" 
-              fill 
-              className="object-cover"
-              priority
-              onError={handleImageError}
-            />
-          )}
+          </motion.div>
+
+          {/* Temples */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="group"
+          >
+            <div className="relative overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <div className="relative h-64 w-full">
+                <Image
+                  src="/images/temples.jpg"
+                  alt="Varanasi Temples"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-semibold mb-2">Ancient Temples</h3>
+                <p className="text-sm opacity-90">Centuries-old spiritual sanctuaries</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Ganges River */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="group"
+          >
+            <div className="relative overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <div className="relative h-64 w-full">
+                <Image
+                  src="/images/varanasi-landscape.JPG"
+                  alt="Ganges River"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-semibold mb-2">Holy Ganges</h3>
+                <p className="text-sm opacity-90">The sacred river that flows through the city</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </Reveal>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center mt-12"
+        >
+          <p className="text-lg text-gray-600 mb-6">
+            Ready to explore the spiritual heart of India?
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300"
+          >
+            Start Your Journey
+          </motion.button>
+        </motion.div>
+      </div>
     </section>
   );
-} 
+}

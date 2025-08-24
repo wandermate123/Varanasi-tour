@@ -1,71 +1,132 @@
 'use client';
 
-import { FaWhatsapp } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { FaWhatsapp, FaPhone, FaEnvelope } from 'react-icons/fa';
 
-interface ContactOption {
-  title: string;
-  description: string;
-  phoneNumber: string;
-  message: string;
-}
-
-const contactOptions: ContactOption[] = [
-  {
-    title: "Trip Planning",
-    description: "Get personalized trip recommendations and itineraries",
-    phoneNumber: "919214313559",
-    message: "Hi! I would like help planning my trip with WanderMate."
-  },
-  {
-    title: "Booking Assistance",
-    description: "Help with bookings and reservations",
-    phoneNumber: "919214313559",
-    message: "Hi! I need assistance with making a booking on WanderMate."
-  },
-  {
-    title: "Customer Support",
-    description: "24/7 support for any queries or concerns",
-    phoneNumber: "919214313559",
-    message: "Hi! I have a question about WanderMate services."
-  }
-];
-
-const WhatsAppSection = () => {
-  const handleWhatsAppClick = (phoneNumber: string, message: string) => {
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+export default function WhatsAppSection() {
+  const handleWhatsAppClick = () => {
+    const message = "Hi! I'm interested in exploring Varanasi. Can you help me plan my trip?";
+    const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
+  const handleCallClick = () => {
+    window.open('tel:+919876543210', '_blank');
+  };
+
+  const handleEmailClick = () => {
+    window.open('mailto:info@varanasi-tourism.com', '_blank');
+  };
+
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="bg-gradient-to-r from-green-600 to-green-700 py-16">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Contact Us on WhatsApp</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {contactOptions.map((option, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Get in Touch with Us
+          </h2>
+          <p className="text-lg text-green-100 max-w-3xl mx-auto">
+            Have questions about your Varanasi adventure? Our travel experts are here to help you 
+            plan the perfect spiritual journey
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          {/* WhatsApp */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-center"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleWhatsAppClick}
+              className="bg-green-500 hover:bg-green-600 text-white p-6 rounded-full mb-4 transition-colors duration-300 shadow-lg hover:shadow-xl"
             >
-              <div className="flex items-center gap-3 mb-3">
-                {option.title === "Trip Planning" && (
-                  <FaWhatsapp className="text-2xl text-green-500" />
-                )}
-                <h3 className="text-xl font-semibold">{option.title}</h3>
-              </div>
-              <p className="text-gray-600 mb-4">{option.description}</p>
-              <button
-                onClick={() => handleWhatsAppClick(option.phoneNumber, option.message)}
-                className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
-              >
-                <FaWhatsapp className="text-xl" />
-                <span>Chat Now</span>
-              </button>
-            </div>
-          ))}
+              <FaWhatsapp className="text-3xl mx-auto" />
+            </motion.button>
+            <h3 className="text-xl font-semibold text-white mb-2">WhatsApp Chat</h3>
+            <p className="text-green-100">Quick responses, instant support</p>
+          </motion.div>
+
+          {/* Phone */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-center"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleCallClick}
+              className="bg-blue-500 hover:bg-blue-600 text-white p-6 rounded-full mb-4 transition-colors duration-300 shadow-lg hover:shadow-xl"
+            >
+              <FaPhone className="text-3xl mx-auto" />
+            </motion.button>
+            <h3 className="text-xl font-semibold text-white mb-2">Call Us</h3>
+            <p className="text-green-100">Speak directly with our experts</p>
+          </motion.div>
+
+          {/* Email */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-center"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleEmailClick}
+              className="bg-purple-500 hover:bg-purple-600 text-white p-6 rounded-full mb-4 transition-colors duration-300 shadow-lg hover:shadow-xl"
+            >
+              <FaEnvelope className="text-3xl mx-auto" />
+            </motion.button>
+            <h3 className="text-xl font-semibold text-white mb-2">Email</h3>
+            <p className="text-green-100">Detailed inquiries and planning</p>
+          </motion.div>
         </div>
+
+        {/* Additional Info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center mt-12"
+        >
+          <div className="bg-white bg-opacity-10 rounded-lg p-6 max-w-2xl mx-auto">
+            <h3 className="text-xl font-semibold text-white mb-3">
+              Why Choose Our WhatsApp Support?
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-green-100">
+              <div className="flex items-center">
+                <span className="w-2 h-2 bg-green-300 rounded-full mr-2"></span>
+                Instant responses 24/7
+              </div>
+              <div className="flex items-center">
+                <span className="w-2 h-2 bg-green-300 rounded-full mr-2"></span>
+                Personalized trip planning
+              </div>
+              <div className="flex items-center">
+                <span className="w-2 h-2 bg-green-300 rounded-full mr-2"></span>
+                Real-time booking support
+              </div>
+              <div className="flex items-center">
+                <span className="w-2 h-2 bg-green-300 rounded-full mr-2"></span>
+                Local insider knowledge
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
-};
-
-export default WhatsAppSection; 
+}

@@ -2,15 +2,11 @@
 
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
-import LandscapeSection from '@/components/LandscapeSection';
 import ExploreSection from '@/components/ExploreSection';
 import PremiumShopSection from '@/components/PremiumShopSection';
 import PackagesSection from '@/components/PackagesSection';
 import Footer from '@/components/Footer';
-import WhatsAppSection from '@/components/WhatsAppSection';
-import MobileNavigation from '@/components/MobileNavigation';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
+import TestimonialsSection from '@/components/TestimonialsSection';
 
 export default function HomePage() {
   return (
@@ -30,12 +26,17 @@ export default function HomePage() {
         {/* Premium Shop Section */}
         <PremiumShopSection />
 
-        <LandscapeSection />
+        <section className="h-12 sm:h-16 bg-white"></section>
+
+        {/* Explore Section */}
         <ExploreSection />
-        <WhatsAppSection />
+
+        <section className="h-12 sm:h-16 bg-white"></section>
+
+        {/* Testimonials Section */}
+        <TestimonialsSection />
       </main>
       <Footer />
-      <MobileNavigation />
     </div>
   );
 }

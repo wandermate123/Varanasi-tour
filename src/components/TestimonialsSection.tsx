@@ -5,14 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Star, 
   Quote, 
-  ThumbsUp, 
   Users, 
   TrendingUp, 
   Award,
-  Heart,
-  MessageCircle,
   CheckCircle,
-  Sparkles,
   ArrowLeft,
   ArrowRight,
   MapPin,
@@ -29,11 +25,11 @@ const TestimonialsSection = () => {
       name: 'Sarah Chen',
       location: 'San Francisco, USA',
       role: 'Solo Traveler',
-      image: '👩‍💼',
+      image: '/images/ai-guide.jpg',
       rating: 5,
       date: '2 weeks ago',
       experience: 'Spiritual Journey',
-      testimonial: 'Wandermate transformed my Varanasi experience completely. The AI guide knew exactly when to visit each ghat for the perfect sunrise view, and the cultural insights were incredibly deep and meaningful.',
+      testimonial: 'Wandermate transformed my Varanasi experience completely. The expert guides knew exactly when to visit each ghat for the perfect sunrise view, and the cultural insights were incredibly deep and meaningful.',
       highlights: ['Perfect timing recommendations', 'Deep cultural insights', 'Solo travel safety'],
       verified: true
     },
@@ -42,11 +38,11 @@ const TestimonialsSection = () => {
       name: 'Marcus Johnson',
       location: 'London, UK',
       role: 'Cultural Enthusiast',
-      image: '👨‍🎨',
+      image: '/images/hero2.jpg',
       rating: 5,
       date: '1 month ago',
       experience: 'Heritage Tour',
-      testimonial: 'As someone passionate about history, I was amazed by the detailed stories the AI shared about each temple and monument. It felt like having a personal historian and local guide combined.',
+      testimonial: 'As someone passionate about history, I was amazed by the detailed stories shared about each temple and monument. It felt like having a personal historian and local guide combined.',
       highlights: ['Historical accuracy', 'Personalized narratives', 'Hidden gem discoveries'],
       verified: true
     },
@@ -55,7 +51,7 @@ const TestimonialsSection = () => {
       name: 'Priya Sharma',
       location: 'Mumbai, India',
       role: 'Group Leader',
-      image: '👩‍🏫',
+      image: '/images/hero3.jpg',
       rating: 5,
       date: '3 weeks ago',
       experience: 'Family Trip',
@@ -68,12 +64,12 @@ const TestimonialsSection = () => {
       name: 'David Kim',
       location: 'Seoul, Korea',
       role: 'Photography Enthusiast',
-      image: '📸',
+      image: '/images/photography.jpg',
       rating: 5,
       date: '1 week ago',
       experience: 'Photo Walk',
-      testimonial: 'The photo recognition feature blew my mind. Point the camera at any artwork or architecture, and instantly get the full story. Plus, the AI suggested the best photography spots at golden hour.',
-      highlights: ['Photo recognition', 'Golden hour timing', 'Composition suggestions'],
+      testimonial: 'The photography guidance was exceptional. Our guide suggested the best photography spots at golden hour and provided insights into the cultural significance of each location.',
+      highlights: ['Expert photography guidance', 'Golden hour timing', 'Cultural context'],
       verified: true
     },
     {
@@ -81,12 +77,12 @@ const TestimonialsSection = () => {
       name: 'Elena Rodriguez',
       location: 'Barcelona, Spain',
       role: 'Spiritual Seeker',
-      image: '🧘‍♀️',
+      image: '/images/wellness.jpg',
       rating: 5,
       date: '2 months ago',
       experience: 'Meditation Retreat',
-      testimonial: 'The AI understood my interest in meditation and spirituality, guiding me to peaceful spots away from crowds. The voice assistant even helped me learn basic Sanskrit mantras.',
-      highlights: ['Personalized spirituality', 'Peaceful locations', 'Language learning'],
+      testimonial: 'The spiritual guidance was profound and authentic. Our guide understood my interest in meditation and spirituality, guiding me to peaceful spots away from crowds.',
+      highlights: ['Personalized spirituality', 'Peaceful locations', 'Authentic guidance'],
       verified: true
     }
   ];
@@ -97,440 +93,197 @@ const TestimonialsSection = () => {
       label: 'Happy Travelers',
       value: '2,500+',
       description: 'Joined our community',
-      color: 'from-primary-500 to-primary-600'
-    },
-    {
-      icon: Star,
-      label: 'Average Rating',
-      value: '4.9/5',
-      description: 'Consistently excellent',
-      color: 'from-yellow-400 to-yellow-500'
+      color: 'from-blue-500 to-blue-600'
     },
     {
       icon: TrendingUp,
-      label: 'Satisfaction Rate',
+      label: 'Success Rate',
       value: '98%',
-      description: 'Would recommend',
-      color: 'from-green-400 to-green-500'
+      description: 'Satisfaction rate',
+      color: 'from-green-500 to-green-600'
     },
     {
       icon: Award,
-      label: 'Places Covered',
-      value: '50K+',
-      description: 'Locations mapped',
-      color: 'from-accent-500 to-accent-600'
-    }
-  ];
-
-  const achievements = [
+      label: 'Awards Won',
+      value: '15+',
+      description: 'Industry recognition',
+      color: 'from-yellow-500 to-yellow-600'
+    },
     {
       icon: CheckCircle,
-      title: 'AI-Powered Precision',
-      description: '99.7% accuracy in recommendations and directions'
-    },
-    {
-      icon: Heart,
-      title: 'Loved by Travelers',
-      description: '4.9/5 rating from 2,500+ verified users'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Real-time Support',
-      description: '24/7 AI assistance in 15+ languages'
-    },
-    {
-      icon: Award,
-      title: 'Industry Recognition',
-      description: 'Featured in top travel tech publications'
+      label: 'Experiences',
+      value: '50+',
+      description: 'Curated tours',
+      color: 'from-purple-500 to-purple-600'
     }
   ];
 
+  // Auto-advance testimonials
   useEffect(() => {
-    if (isAutoPlaying) {
-      const interval = setInterval(() => {
-        setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-      }, 5000);
-      return () => clearInterval(interval);
-    }
+    if (!isAutoPlaying) return;
+
+    const timer = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 6000);
+
+    return () => clearInterval(timer);
   }, [isAutoPlaying, testimonials.length]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 40, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 20
-      }
-    }
-  };
-
-  const testimonialVariants = {
-    enter: {
-      x: 300,
-      opacity: 0,
-      scale: 0.9
-    },
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30
-      }
-    },
-    exit: {
-      x: -300,
-      opacity: 0,
-      scale: 0.9,
-      transition: {
-        duration: 0.3
-      }
-    }
+  const goToTestimonial = (index: number) => {
+    setCurrentTestimonial(index);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 8000);
   };
 
   const nextTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    goToTestimonial((currentTestimonial + 1) % testimonials.length);
   };
 
   const prevTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    goToTestimonial((currentTestimonial - 1 + testimonials.length) % testimonials.length);
   };
 
   return (
-    <section className="relative py-24 sm:py-32 lg:py-40 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 via-white to-accent-50/30">
-        <div className="absolute inset-0 bg-gradient-to-r from-accent-50/20 via-transparent to-primary-50/20"></div>
-        <div className="absolute inset-0 noise-texture opacity-[0.02]"></div>
-      </div>
+    <section className="bg-white py-20">
+      <div className="container mx-auto max-w-6xl px-4">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            What Our Travelers Say
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Discover why thousands of travelers choose Wandermate for their Varanasi experience
+          </p>
+        </div>
 
-      {/* Floating background elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -50, 0],
-              opacity: [0.1, 0.4, 0.1],
-              scale: [1, 1.3, 1],
-            }}
-            transition={{
-              duration: 12 + i * 0.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.2
-            }}
-            className={`absolute rounded-full ${
-              i % 5 === 0 ? 'w-16 h-16 bg-primary-200/20' :
-              i % 5 === 1 ? 'w-20 h-20 bg-accent-200/15' :
-              i % 5 === 2 ? 'w-12 h-12 bg-yellow-200/25' :
-              i % 5 === 3 ? 'w-24 h-24 bg-green-200/20' :
-              'w-18 h-18 bg-travel-temple/15'
-            } blur-xl`}
-            style={{
-              left: `${8 + (i * 10)}%`,
-              top: `${10 + (i * 8)}%`,
-            }}
-          />
-        ))}
-      </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="text-center"
+            >
+              <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${stat.color} flex items-center justify-center`}>
+                <stat.icon className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
+              <div className="text-sm font-medium text-gray-600 mb-1">{stat.label}</div>
+              <div className="text-xs text-gray-500">{stat.description}</div>
+            </motion.div>
+          ))}
+        </div>
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12"
-      >
-        {/* Header */}
-        <motion.div variants={itemVariants} className="text-center space-y-8 mb-20">
-          <motion.div
-            className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-accent-100 to-primary-100 border border-accent-200/50 shadow-soft"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          >
-            <Heart className="w-5 h-5 mr-3 text-accent-600" />
-            <span className="text-accent-800 font-medium">Loved by Travelers</span>
-          </motion.div>
-          
-          <div className="space-y-6">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold">
-              <motion.span
-                className="block bg-gradient-to-r from-neutral-900 via-accent-800 to-primary-700 bg-clip-text text-transparent"
-                animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                }}
-                transition={{
-                  duration: 7,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                style={{
-                  backgroundSize: '200% 200%',
-                }}
-              >
-                Stories from Travelers
-              </motion.span>
-              <span className="block text-neutral-700 mt-2">Around the World</span>
-            </h2>
-            
-            <p className="text-xl sm:text-2xl text-neutral-600 leading-relaxed max-w-3xl mx-auto">
-              Discover how Wandermate has transformed travel experiences for thousands of explorers in Varanasi.
-            </p>
-          </div>
-        </motion.div>
+        {/* Testimonials Carousel */}
+        <div className="relative max-w-4xl mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentTestimonial}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <div className="mb-8">
+                <Quote className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-6 italic">
+                  "{testimonials[currentTestimonial].testimonial}"
+                </p>
+              </div>
 
-        {/* Main Testimonial Carousel */}
-        <motion.div variants={itemVariants} className="mb-20">
-          <div className="relative max-w-4xl mx-auto">
-            {/* Navigation buttons */}
+              {/* Testimonial Author */}
+              <div className="flex items-center justify-center space-x-4 mb-6">
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+                  <img
+                    src={testimonials[currentTestimonial].image}
+                    alt={testimonials[currentTestimonial].name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-gray-900">
+                    {testimonials[currentTestimonial].name}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {testimonials[currentTestimonial].role} • {testimonials[currentTestimonial].location}
+                  </div>
+                  <div className="flex items-center space-x-1 mt-1">
+                    {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Experience Highlights */}
+              <div className="flex flex-wrap justify-center gap-2 mb-6">
+                {testimonials[currentTestimonial].highlights.map((highlight, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full"
+                  >
+                    {highlight}
+                  </span>
+                ))}
+              </div>
+
+              {/* Experience Type */}
+              <div className="text-sm text-gray-500">
+                Experience: {testimonials[currentTestimonial].experience}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-center space-x-4 mt-8">
             <button
               onClick={prevTestimonial}
-              onMouseEnter={() => setIsAutoPlaying(false)}
-              onMouseLeave={() => setIsAutoPlaying(true)}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-10 bg-white rounded-full p-3 shadow-glow hover:shadow-luxurious transition-all duration-300 group"
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-neutral-600 group-hover:text-primary-600 transition-colors duration-300" />
-            </button>
-            
-            <button
-              onClick={nextTestimonial}
-              onMouseEnter={() => setIsAutoPlaying(false)}
-              onMouseLeave={() => setIsAutoPlaying(true)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-10 bg-white rounded-full p-3 shadow-glow hover:shadow-luxurious transition-all duration-300 group"
-            >
-              <ArrowRight className="w-6 h-6 text-neutral-600 group-hover:text-primary-600 transition-colors duration-300" />
+              <ArrowLeft className="w-5 h-5 text-gray-600" />
             </button>
 
-            {/* Testimonial Card */}
-            <div className="relative bg-white rounded-3xl shadow-luxurious border border-neutral-100 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-accent-50/50 via-transparent to-primary-50/50"></div>
-              
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentTestimonial}
-                  variants={testimonialVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="relative p-8 lg:p-12 space-y-8"
-                >
-                  {/* Quote Icon */}
-                  <motion.div
-                    animate={{ rotate: [0, 5, -5, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-16 h-16 bg-gradient-to-br from-accent-500 to-primary-500 rounded-2xl flex items-center justify-center shadow-glow"
-                  >
-                    <Quote className="w-8 h-8 text-white" />
-                  </motion.div>
-
-                  {/* Testimonial Content */}
-                  <div className="space-y-6">
-                    <div className="flex items-center space-x-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    
-                    <blockquote className="text-2xl lg:text-3xl text-neutral-800 leading-relaxed font-medium">
-                      "{testimonials[currentTestimonial].testimonial}"
-                    </blockquote>
-
-                    {/* Highlights */}
-                    <div className="flex flex-wrap gap-3">
-                      {testimonials[currentTestimonial].highlights.map((highlight, idx) => (
-                        <motion.div
-                          key={highlight}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.2 + idx * 0.1 }}
-                          className="px-4 py-2 bg-gradient-to-r from-accent-100 to-primary-100 rounded-full text-sm font-medium text-neutral-700"
-                        >
-                          {highlight}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Author Info */}
-                  <div className="flex items-center justify-between pt-8 border-t border-neutral-200">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-accent-100 rounded-2xl flex items-center justify-center text-2xl shadow-soft">
-                        {testimonials[currentTestimonial].image}
-                      </div>
-                      <div>
-                        <div className="flex items-center space-x-3">
-                          <h4 className="text-xl font-bold text-neutral-900">
-                            {testimonials[currentTestimonial].name}
-                          </h4>
-                          {testimonials[currentTestimonial].verified && (
-                            <div className="flex items-center space-x-1 text-green-600">
-                              <CheckCircle className="w-4 h-4" />
-                              <span className="text-xs font-medium">Verified</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-4 text-neutral-600 text-sm">
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{testimonials[currentTestimonial].location}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Clock className="w-4 h-4" />
-                            <span>{testimonials[currentTestimonial].date}</span>
-                          </div>
-                        </div>
-                        <div className="mt-1">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700">
-                            {testimonials[currentTestimonial].experience}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Pagination Dots */}
-            <div className="flex justify-center space-x-3 mt-8">
+            {/* Dots */}
+            <div className="flex space-x-2">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  onClick={() => goToTestimonial(index)}
+                  className={`w-3 h-3 rounded-full transition-all ${
                     index === currentTestimonial
-                      ? 'bg-gradient-to-r from-accent-500 to-primary-500 shadow-glow scale-125'
-                      : 'bg-neutral-300 hover:bg-neutral-400'
+                      ? 'bg-blue-600 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
                   }`}
                 />
               ))}
             </div>
-          </div>
-        </motion.div>
 
-        {/* Stats Grid */}
-        <motion.div variants={itemVariants} className="mb-20">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                className="text-center space-y-4 group"
-                whileHover={{ scale: 1.05, y: -4 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-soft group-hover:shadow-glow transition-all duration-300`}>
-                  <stat.icon className="w-10 h-10 text-white" />
-                </div>
-                <div>
-                  <div className="text-3xl lg:text-4xl font-bold text-neutral-900 mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-lg font-semibold text-neutral-700 mb-1">
-                    {stat.label}
-                  </div>
-                  <div className="text-sm text-neutral-500">
-                    {stat.description}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            <button
+              onClick={nextTestimonial}
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <ArrowRight className="w-5 h-5 text-gray-600" />
+            </button>
           </div>
-        </motion.div>
-
-        {/* Achievements Grid */}
-        <motion.div variants={itemVariants} className="mb-20">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4">
-              Why Choose <span className="gradient-text">Wandermate</span>
-            </h3>
-            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-              Built with cutting-edge technology and deep local expertise to deliver exceptional travel experiences.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {achievements.map((achievement, index) => (
-              <motion.div
-                key={achievement.title}
-                className="group relative bg-white rounded-2xl p-8 shadow-soft hover:shadow-glow transition-all duration-300 border border-neutral-100 hover:border-accent-200"
-                whileHover={{ scale: 1.02, y: -4 }}
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-500 to-primary-500 rounded-xl flex items-center justify-center shadow-soft group-hover:shadow-glow transition-all duration-300 flex-shrink-0">
-                    <achievement.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-neutral-900 mb-2 group-hover:text-accent-700 transition-colors duration-300">
-                      {achievement.title}
-                    </h4>
-                    <p className="text-neutral-600 leading-relaxed group-hover:text-neutral-700 transition-colors duration-300">
-                      {achievement.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        </div>
 
         {/* CTA Section */}
-        <motion.div variants={itemVariants} className="text-center">
-          <div className="bg-gradient-to-br from-accent-500 via-primary-500 to-accent-600 rounded-3xl p-8 lg:p-12 text-white shadow-luxurious">
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-20 h-20 mx-auto mb-8 bg-white/20 rounded-2xl flex items-center justify-center"
-            >
-              <Sparkles className="w-10 h-10 text-white" />
-            </motion.div>
-            
-            <div className="space-y-6">
-              <h3 className="text-3xl sm:text-4xl font-bold">
-                Ready to Create Your Own Story?
-              </h3>
-              <p className="text-xl opacity-90 max-w-2xl mx-auto">
-                Join thousands of travelers who have discovered the magic of Varanasi with Wandermate. Your journey awaits.
-              </p>
-              
-              <motion.button
-                className="inline-flex items-center space-x-3 bg-white text-accent-700 px-10 py-5 rounded-2xl font-bold text-lg shadow-glow hover:shadow-luxurious transition-all duration-300"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>Join the Waitlist</span>
-                <motion.div
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  ✨
-                </motion.div>
-              </motion.button>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
+        <div className="text-center mt-16">
+          <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+            Ready to Experience Varanasi?
+          </h3>
+          <p className="text-gray-600 mb-6">
+            Join thousands of satisfied travelers who have discovered the magic of Varanasi with us
+          </p>
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+            Book Your Experience
+          </button>
+        </div>
+      </div>
     </section>
   );
 };
